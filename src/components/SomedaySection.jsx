@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { TaskCard } from './TaskCard'
 import { useTasks } from '../hooks/useTasks'
 
 export function SomedaySection({ onEditTask }) {
-  const { somedayTasks, deleteTask } = useTasks()
+  const { somedayTasks, deleteTask, updateTask } = useTasks()
+  const [isDragOver, setIsDragOver] = useState(false)
 
   const handleDelete = async (taskId) => {
     if (confirm('Delete this task?')) {
@@ -11,8 +12,32 @@ export function SomedaySection({ onEditTask }) {
     }
   }
 
+  const handleDragOver = (e) => {
+    e.preventDefault()
+    setIsDragOver(true)
+  }
+
+  const handleDragLeave = () => {
+    setIsDragOver(false)
+  }
+
+  const handleDrop = async (e) => {
+    e.preventDefault()
+    setIsDragOver(false)
+
+    const taskId = e.dataTransfer.getData('taskId')
+    if (taskId) {
+      await updateTask(parseInt(taskId), { date: null })
+    }
+  }
+
   return (
-    <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+    <div
+      className={`border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-colors ${isDragOver ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
       <div className="px-6 py-3">
         <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
           Someday

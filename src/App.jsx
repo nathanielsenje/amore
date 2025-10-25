@@ -38,8 +38,11 @@ function App() {
     setEditingTask(null)
   }
 
-  const handleOpenEditor = (task = null) => {
+  const [initialDate, setInitialDate] = useState(null)
+
+  const handleOpenEditor = (task = null, date = null) => {
     setEditingTask(task)
+    setInitialDate(date)
     setIsEditorOpen(true)
   }
 
@@ -65,6 +68,7 @@ function App() {
         isOpen={isEditorOpen}
         onClose={handleCloseEditor}
         task={editingTask}
+        initialDate={initialDate}
       />
     </div>
   )

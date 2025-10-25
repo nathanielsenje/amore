@@ -20,15 +20,24 @@ export function TaskCard({ task, onEdit, onDelete }) {
     }
   }
 
+  const handleDragStart = (e) => {
+    // Don't allow dragging recurring tasks
+    if (task.isRecurring) {
+      e.preventDefault()
+      return
+    }
+    e.dataTransfer.setData('taskId', task.id.toString())
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
   return (
     <div
-      className="task-card group p-3 rounded-lg bg-white dark:bg-gray-700 border-2 hover:shadow-md transition-shadow"
+      draggable={!task.isRecurring}
+      onDragStart={handleDragStart}
+      className="task-card group px-3 py-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:scale-[1.02] transition-all cursor-move"
       style={{
         borderLeftColor: task.color,
-        borderLeftWidth: '4px',
-        borderTopColor: '#e5e7eb',
-        borderRightColor: '#e5e7eb',
-        borderBottomColor: '#e5e7eb',
+        borderLeftWidth: '3px',
       }}
     >
       <div className="flex items-start space-x-3">

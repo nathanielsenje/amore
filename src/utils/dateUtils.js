@@ -24,6 +24,7 @@ export function formatDayHeader(date) {
   return {
     dayName: format(date, 'EEE'),
     dayNumber: format(date, 'd'),
+    monthAbbr: format(date, 'MMM'),
     fullDate: formatDate(date),
     isToday: isToday(date),
   }
