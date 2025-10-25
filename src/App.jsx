@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useTheme } from './hooks/useTheme'
 import { useTasks } from './hooks/useTasks'
 import { WeekView } from './components/WeekView'
+import { SomedaySection } from './components/SomedaySection'
 import { TaskEditor } from './components/TaskEditor'
 import { FloatingAddButton } from './components/FloatingAddButton'
 
@@ -42,8 +43,12 @@ function App() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-hidden">
-        <WeekView onEditTask={handleOpenEditor} />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 overflow-hidden">
+          <WeekView onEditTask={handleOpenEditor} />
+        </div>
+
+        <SomedaySection onEditTask={handleOpenEditor} />
       </div>
 
       {/* Floating Add Button */}
