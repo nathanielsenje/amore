@@ -15,6 +15,24 @@ function App() {
     fetchTasks()
   }, [fetchTasks])
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Cmd/Ctrl + N = New task
+      if ((e.metaKey || e.ctrlKey) && e.key === 'n') {
+        e.preventDefault()
+        handleOpenEditor()
+      }
+
+      // Escape = Close modal
+      if (e.key === 'Escape' && isEditorOpen) {
+        handleCloseEditor()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isEditorOpen])
+
   const handleCloseEditor = () => {
     setIsEditorOpen(false)
     setEditingTask(null)

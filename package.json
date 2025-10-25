@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "A beautiful task management app for macOS",
   "main": "electron/main.js",
-  "directories": {
-    "doc": "docs"
-  },
   "scripts": {
     "dev": "concurrently \"npm run dev:vite\" \"npm run dev:electron\"",
     "dev:vite": "vite",
@@ -36,7 +33,6 @@
   "dependencies": {
     "better-sqlite3": "^12.4.1",
     "date-fns": "^4.1.0",
-    "electron": "^38.4.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
@@ -47,6 +43,7 @@
     "autoprefixer": "^10.4.21",
     "concurrently": "^9.2.1",
     "cross-env": "^10.1.0",
+    "electron": "^38.4.0",
     "electron-builder": "^26.0.12",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.16",
