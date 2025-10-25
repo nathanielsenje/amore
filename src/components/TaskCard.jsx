@@ -22,7 +22,7 @@ export function TaskCard({ task, onEdit, onDelete }) {
 
   return (
     <div
-      className="group p-3 rounded-lg bg-white dark:bg-gray-700 border-2 hover:shadow-md transition-shadow"
+      className="task-card group p-3 rounded-lg bg-white dark:bg-gray-700 border-2 hover:shadow-md transition-shadow"
       style={{
         borderLeftColor: task.color,
         borderLeftWidth: '4px',
