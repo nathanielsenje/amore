@@ -1,34 +1,33 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { useTheme } from './hooks/useTheme'
+import { useTasks } from './hooks/useTasks'
 
 function App() {
-  const [tasks, setTasks] = useState([])
+  const { theme, toggleTheme } = useTheme()
+  const { tasks, fetchTasks } = useTasks()
 
   useEffect(() => {
-    async function fetchTasks() {
-      const allTasks = await window.electronAPI.tasks.getAll()
-      setTasks(allTasks)
-    }
-
     fetchTasks()
-  }, [])
+  }, [fetchTasks])
 
   return (
     <div className="h-screen bg-gray-50 dark:bg-gray-900">
       <div className="p-4">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Amore
-        </h1>
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Amore
+          </h1>
+          <button
+            onClick={toggleTheme}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
+        </div>
         <div className="mt-4">
-          <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+          <p className="text-gray-600 dark:text-gray-400">
             Tasks: {tasks.length}
-          </h2>
-          <ul className="mt-2">
-            {tasks.map(task => (
-              <li key={task.id} className="text-gray-600 dark:text-gray-400">
-                {task.title}
-              </li>
-            ))}
-          </ul>
+          </p>
         </div>
       </div>
     </div>
