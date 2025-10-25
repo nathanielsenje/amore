@@ -7,7 +7,17 @@ export function TaskCard({ task, onEdit, onDelete }) {
   const { toggleTaskComplete } = useTasks()
 
   const handleToggle = async () => {
-    await toggleTaskComplete(task.id, !task.completed)
+    if (task.isRecurring) {
+      await window.electronAPI.recurring.toggleCompletion(
+        task.templateId,
+        task.date,
+        !task.completed
+      )
+      // Refresh the view
+      window.location.reload()
+    } else {
+      await toggleTaskComplete(task.id, !task.completed)
+    }
   }
 
   return (
@@ -44,26 +54,28 @@ export function TaskCard({ task, onEdit, onDelete }) {
             </p>
           )}
 
-          <SubtaskList parentId={task.id} />
+          {!task.isRecurring && <SubtaskList parentId={task.id} />}
         </div>
 
-        {/* Actions - shown on hover */}
-        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex space-x-1">
-          <button
-            onClick={() => onEdit?.(task)}
-            className="p-1 hover:bg-gray-100 dark:hover:bg-gray-600 rounded"
-            title="Edit task"
-          >
-            <span className="text-xs">✏️</span>
-          </button>
-          <button
-            onClick={() => onDelete?.(task.id)}
-            className="p-1 hover:bg-gray-100 dark:hover:bg-gray-600 rounded"
-            title="Delete task"
-          >
-            <span className="text-xs">🗑️</span>
-          </button>
-        </div>
+        {/* Actions - shown on hover (not for recurring) */}
+        {!task.isRecurring && (
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity flex space-x-1">
+            <button
+              onClick={() => onEdit?.(task)}
+              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-600 rounded"
+              title="Edit task"
+            >
+              <span className="text-xs">✏️</span>
+            </button>
+            <button
+              onClick={() => onDelete?.(task.id)}
+              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-600 rounded"
+              title="Delete task"
+            >
+              <span className="text-xs">🗑️</span>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )

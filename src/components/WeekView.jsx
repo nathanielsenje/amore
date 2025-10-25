@@ -6,16 +6,33 @@ import { useTasks } from '../hooks/useTasks'
 export function WeekView({ onEditTask }) {
   const [currentWeek, setCurrentWeek] = useState(new Date())
   const [weekDays, setWeekDays] = useState([])
+  const [recurringInstances, setRecurringInstances] = useState([])
   const { tasks } = useTasks()
 
   useEffect(() => {
     const days = getWeekDays(currentWeek, 0) // 0 = Sunday
     setWeekDays(days)
+    loadRecurringInstances(days)
   }, [currentWeek])
+
+  const loadRecurringInstances = async (days) => {
+    if (days.length === 0) return
+    const startDate = formatDate(days[0])
+    const endDate = formatDate(days[days.length - 1])
+    const instances = await window.electronAPI.recurring.getInstances(startDate, endDate)
+    setRecurringInstances(instances)
+  }
 
   const getTasksForDate = (date) => {
     const dateStr = formatDate(date)
-    return tasks.filter(task => task.date === dateStr && !task.parent_id)
+
+    // Regular tasks
+    const regularTasks = tasks.filter(task => task.date === dateStr && !task.parent_id)
+
+    // Recurring instances
+    const recurring = recurringInstances.filter(inst => inst.date === dateStr)
+
+    return [...regularTasks, ...recurring]
   }
 
   const handlePrevWeek = () => {

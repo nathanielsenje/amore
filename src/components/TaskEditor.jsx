@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { ColorPicker } from './ColorPicker'
+import { RecurringOptions } from './RecurringOptions'
 import { useTasks } from '../hooks/useTasks'
 import { formatDate } from '../utils/dateUtils'
 
@@ -13,6 +14,7 @@ export function TaskEditor({ isOpen, onClose, task, initialDate }) {
   })
   const [subtasks, setSubtasks] = useState([])
   const [newSubtask, setNewSubtask] = useState('')
+  const [recurringConfig, setRecurringConfig] = useState(null)
 
   useEffect(() => {
     if (task) {
@@ -37,6 +39,7 @@ export function TaskEditor({ isOpen, onClose, task, initialDate }) {
     })
     setSubtasks([])
     setNewSubtask('')
+    setRecurringConfig(null)
   }
 
   const loadSubtasks = async () => {
@@ -57,6 +60,14 @@ export function TaskEditor({ isOpen, onClose, task, initialDate }) {
     } else {
       // Create new task
       const newTask = await createTask(formData)
+
+      // Create recurring template if configured
+      if (recurringConfig && recurringConfig.intervalType !== 'none') {
+        await window.electronAPI.recurring.create(newTask.id, {
+          ...recurringConfig,
+          startDate: formData.date || formatDate(new Date()),
+        })
+      }
 
       // Create subtasks if any
       for (const subtask of subtasks) {
@@ -156,6 +167,14 @@ export function TaskEditor({ isOpen, onClose, task, initialDate }) {
             selected={formData.color}
             onChange={(color) => setFormData({ ...formData, color })}
           />
+
+          {/* Recurring */}
+          {!task && (
+            <RecurringOptions
+              config={recurringConfig}
+              onChange={setRecurringConfig}
+            />
+          )}
 
           {/* Subtasks */}
           {!task && (

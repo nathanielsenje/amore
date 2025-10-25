@@ -1,5 +1,11 @@
 const { ipcMain } = require('electron')
 const { getDatabase } = require('./database')
+const {
+  createRecurringTemplate,
+  getRecurringTemplate,
+  getAllRecurringInstances,
+  toggleRecurringCompletion,
+} = require('./recurring-tasks')
 
 const ALLOWED_UPDATE_FIELDS = ['title', 'description', 'color', 'date', 'completed', 'position', 'parent_id']
 
@@ -106,6 +112,25 @@ function setupIpcHandlers() {
     const stmt = db.prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')
     stmt.run(key, JSON.stringify(value))
     return { key, value }
+  })
+
+  // Recurring tasks
+  ipcMain.handle('recurring:create', (event, taskId, config) => {
+    const templateId = createRecurringTemplate(taskId, config)
+    return { templateId }
+  })
+
+  ipcMain.handle('recurring:getTemplate', (event, taskId) => {
+    return getRecurringTemplate(taskId)
+  })
+
+  ipcMain.handle('recurring:getInstances', (event, startDate, endDate) => {
+    return getAllRecurringInstances(startDate, endDate)
+  })
+
+  ipcMain.handle('recurring:toggleCompletion', (event, templateId, date, completed) => {
+    toggleRecurringCompletion(templateId, date, completed)
+    return { success: true }
   })
 }
 
