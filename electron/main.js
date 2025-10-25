@@ -1,6 +1,9 @@
 const { app, BrowserWindow } = require('electron')
 const path = require('path')
 const isDev = process.env.NODE_ENV === 'development'
+const { initDatabase, closeDatabase } = require('./database')
+const { runMigrations } = require('./migrations')
+const { setupIpcHandlers } = require('./ipc-handlers')
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -26,6 +29,9 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  const db = initDatabase()
+  runMigrations(db)
+  setupIpcHandlers()
   createWindow()
 
   app.on('activate', () => {
@@ -33,6 +39,10 @@ app.whenReady().then(() => {
       createWindow()
     }
   })
+})
+
+app.on('before-quit', () => {
+  closeDatabase()
 })
 
 app.on('window-all-closed', () => {

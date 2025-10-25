@@ -1,5 +1,17 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  // Database methods will be added here later
+  tasks: {
+    getAll: () => ipcRenderer.invoke('tasks:getAll'),
+    getByDate: (date) => ipcRenderer.invoke('tasks:getByDate', date),
+    getSomeday: () => ipcRenderer.invoke('tasks:getSomeday'),
+    getSubtasks: (parentId) => ipcRenderer.invoke('tasks:getSubtasks', parentId),
+    create: (task) => ipcRenderer.invoke('tasks:create', task),
+    update: (id, updates) => ipcRenderer.invoke('tasks:update', id, updates),
+    delete: (id) => ipcRenderer.invoke('tasks:delete', id),
+  },
+  settings: {
+    get: (key) => ipcRenderer.invoke('settings:get', key),
+    set: (key, value) => ipcRenderer.invoke('settings:set', key, value),
+  },
 })
