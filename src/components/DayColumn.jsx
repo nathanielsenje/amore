@@ -1,7 +1,17 @@
 import React from 'react'
 import { DayHeader } from './DayHeader'
+import { TaskCard } from './TaskCard'
+import { useTasks } from '../hooks/useTasks'
 
 export function DayColumn({ date, dayName, dayNumber, isToday, tasks }) {
+  const { deleteTask } = useTasks()
+
+  const handleDelete = async (taskId) => {
+    if (confirm('Delete this task?')) {
+      await deleteTask(taskId)
+    }
+  }
+
   return (
     <div className="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 min-h-[500px]">
       <DayHeader
@@ -16,15 +26,11 @@ export function DayColumn({ date, dayName, dayNumber, isToday, tasks }) {
           </p>
         ) : (
           tasks.map(task => (
-            <div
+            <TaskCard
               key={task.id}
-              className="p-3 rounded-lg border border-gray-200 dark:border-gray-600"
-              style={{ borderLeftColor: task.color, borderLeftWidth: '4px' }}
-            >
-              <p className="text-sm text-gray-900 dark:text-white">
-                {task.title}
-              </p>
-            </div>
+              task={task}
+              onDelete={handleDelete}
+            />
           ))
         )}
       </div>
