@@ -3,7 +3,7 @@ import { DayColumn } from './DayColumn'
 import { getWeekDays, formatDayHeader, formatDate, navigateWeek } from '../utils/dateUtils'
 import { useTasks } from '../hooks/useTasks'
 
-export function WeekView() {
+export function WeekView({ onEditTask }) {
   const [currentWeek, setCurrentWeek] = useState(new Date())
   const [weekDays, setWeekDays] = useState([])
   const { tasks } = useTasks()
@@ -69,6 +69,7 @@ export function WeekView() {
                 dayNumber={headerInfo.dayNumber}
                 isToday={headerInfo.isToday}
                 tasks={getTasksForDate(day)}
+                onEditTask={onEditTask}
               />
             )
           })}

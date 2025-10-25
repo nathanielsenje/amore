@@ -1,15 +1,29 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTheme } from './hooks/useTheme'
 import { useTasks } from './hooks/useTasks'
 import { WeekView } from './components/WeekView'
+import { TaskEditor } from './components/TaskEditor'
+import { FloatingAddButton } from './components/FloatingAddButton'
 
 function App() {
   const { theme, toggleTheme } = useTheme()
   const { fetchTasks } = useTasks()
+  const [isEditorOpen, setIsEditorOpen] = useState(false)
+  const [editingTask, setEditingTask] = useState(null)
 
   useEffect(() => {
     fetchTasks()
   }, [fetchTasks])
+
+  const handleCloseEditor = () => {
+    setIsEditorOpen(false)
+    setEditingTask(null)
+  }
+
+  const handleOpenEditor = (task = null) => {
+    setEditingTask(task)
+    setIsEditorOpen(true)
+  }
 
   return (
     <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
@@ -29,8 +43,18 @@ function App() {
 
       {/* Main Content */}
       <div className="flex-1 overflow-hidden">
-        <WeekView />
+        <WeekView onEditTask={handleOpenEditor} />
       </div>
+
+      {/* Floating Add Button */}
+      <FloatingAddButton onClick={() => handleOpenEditor()} />
+
+      {/* Task Editor Modal */}
+      <TaskEditor
+        isOpen={isEditorOpen}
+        onClose={handleCloseEditor}
+        task={editingTask}
+      />
     </div>
   )
 }

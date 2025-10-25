@@ -3,7 +3,7 @@ import { DayHeader } from './DayHeader'
 import { TaskCard } from './TaskCard'
 import { useTasks } from '../hooks/useTasks'
 
-export function DayColumn({ date, dayName, dayNumber, isToday, tasks }) {
+export function DayColumn({ date, dayName, dayNumber, isToday, tasks, onEditTask }) {
   const { deleteTask } = useTasks()
 
   const handleDelete = async (taskId) => {
@@ -29,6 +29,7 @@ export function DayColumn({ date, dayName, dayNumber, isToday, tasks }) {
             <TaskCard
               key={task.id}
               task={task}
+              onEdit={onEditTask}
               onDelete={handleDelete}
             />
           ))
