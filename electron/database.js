@@ -8,7 +8,7 @@ function initDatabase() {
   const userDataPath = app.getPath('userData')
   const dbPath = path.join(userDataPath, 'amore.db')
 
-  db = new Database(dbPath, { verbose: console.log })
+  db = new Database(dbPath, { verbose: process.env.NODE_ENV === 'development' ? console.log : undefined })
 
   // Enable foreign keys
   db.pragma('foreign_keys = ON')

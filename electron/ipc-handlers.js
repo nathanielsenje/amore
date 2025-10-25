@@ -1,6 +1,8 @@
 const { ipcMain } = require('electron')
 const { getDatabase } = require('./database')
 
+const ALLOWED_UPDATE_FIELDS = ['title', 'description', 'color', 'date', 'completed', 'position', 'parent_id']
+
 function setupIpcHandlers() {
   // Get all tasks
   ipcMain.handle('tasks:getAll', () => {
@@ -60,10 +62,18 @@ function setupIpcHandlers() {
     const fields = []
     const values = []
 
+    // Validate and filter fields against whitelist
     Object.keys(updates).forEach(key => {
+      if (!ALLOWED_UPDATE_FIELDS.includes(key)) {
+        throw new Error(`Invalid update field: ${key}`)
+      }
       fields.push(`${key} = ?`)
       values.push(updates[key])
     })
+
+    if (fields.length === 0) {
+      throw new Error('No valid fields to update')
+    }
 
     values.push(id)
 

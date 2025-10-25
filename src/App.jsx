@@ -4,19 +4,12 @@ function App() {
   const [tasks, setTasks] = useState([])
 
   useEffect(() => {
-    // Test creating and fetching tasks
-    async function testDatabase() {
-      await window.electronAPI.tasks.create({
-        title: 'Test Task',
-        description: 'Testing database',
-        date: '2025-10-25',
-      })
-
+    async function fetchTasks() {
       const allTasks = await window.electronAPI.tasks.getAll()
       setTasks(allTasks)
     }
 
-    testDatabase()
+    fetchTasks()
   }, [])
 
   return (
